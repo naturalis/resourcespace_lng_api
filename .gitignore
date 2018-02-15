@@ -1,2 +1,4 @@
 /.project
 /.buildpath
+/secret_keys.txt
+/keys.json

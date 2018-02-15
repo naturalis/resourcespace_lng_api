@@ -44,7 +44,7 @@ final class UserModel extends DatabaseModel {
 	
 	public function saveUserData ($userName, $userId, $hashedUserPassword) {
 		$this->_prepare("
-			update user set username=?, password=?, ,password_last_change=now(), fullname=?, email='', 
+			update user set username=?, password=?, password_last_change=now(), fullname=?, email='', 
 				usergroup=?, ip_restrict='', search_filter_override='', comments='', approved=1
 			where ref=?");
 		$this->_update(['sssii' => [$userName, $hashedUserPassword, $userName, 

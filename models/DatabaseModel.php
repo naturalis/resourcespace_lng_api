@@ -4,16 +4,17 @@ namespace RsApi;
 
 class DatabaseModel {
 	
+	protected $_settings;
 	protected $_mysqli;
 	protected $_stmt;
 	protected $_res;
 	protected $_config;
 	
 	public function __construct ($config = false) {
-		if (!isset($config->db)) {
+		if (!$config || !is_object($config) || !method_exists($config, 'getDbSettings')) {
 			throw new \Exception('Database should be initialised with valid Config object!');
 		}
-		$this->_config = $config;
+		$this->_settings = $config->getDbSettings();
 	}
 	
 	public function __destruct () {
@@ -23,10 +24,10 @@ class DatabaseModel {
 	protected function _mysqli () {
 		if (!($this->_mysqli instanceof MySQLi)) {
 			$this->_mysqli = new \mysqli(
-				$this->_config->db->host,
-				$this->_config->db->user,
-				$this->_config->db->password,
-				$this->_config->db->database
+				$this->_settings->host,
+				$this->_settings->user,
+				$this->_settings->password,
+				$this->_settings->database
 			);
 			if ($this->_mysqli->connect_errno) {
 				throw new \Exception("Failed to connect to MySQL: (" . 
