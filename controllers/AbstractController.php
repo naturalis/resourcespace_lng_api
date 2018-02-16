@@ -2,9 +2,6 @@
 
 namespace RsApi;
 
-require_once 'ConfigController.php';
-require_once 'models/DatabaseModel.php';
-
 abstract class AbstractController {
 	
 	protected $_config;

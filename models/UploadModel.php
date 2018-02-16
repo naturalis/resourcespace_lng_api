@@ -2,7 +2,7 @@
 
 namespace RsApi;
 
-final class UserModel extends DatabaseModel {
+final class UploadModel extends DatabaseModel {
 	
 	public function __construct ($config = false) {
 		parent::__construct($config);

@@ -2,9 +2,6 @@
 
 namespace RsApi;
 
-require_once 'AbstractController.php';
-require_once 'models/UserModel.php';
-
 final class UserController extends AbstractController {
 	
 	private $_userId;
@@ -26,6 +23,7 @@ final class UserController extends AbstractController {
 	
 	public function setMasterKey ($key) {
 		$this->_masterKey = $key;
+		return $this;
 	}
 	
 	public function userExists ($name = null) {
