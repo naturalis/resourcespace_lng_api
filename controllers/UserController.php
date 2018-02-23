@@ -45,7 +45,7 @@ final class UserController extends AbstractController {
 				return $this->getUserData();
 			}
 		}
-		return json_encode($this->_setUserDataError("User $name already exists!"));
+		return $this->_setUserDataError("User $name already exists!");
 	}
 	
 	public function getUserData () {
@@ -53,7 +53,7 @@ final class UserController extends AbstractController {
 		$this->_userData->password = $this->_userPassword;
 		$this->_userData->collection_id = $this->_collectionId;
 		$this->_userData->authentification_key = $this->_makeApiKey();	
-		return json_encode($this->_userData);
+		return $this->_userData;
 	}
 	
 	private function _createUserPassword () {
@@ -66,14 +66,14 @@ final class UserController extends AbstractController {
 		$this->_userData->error = null;
 	}
 	
-	private function _setUserDataError ($error) {
-		$this->_userData->error = $error;
-		return $this->_userData;
-	}
-	
 	private function _makeApiKey () {
         return strtr(base64_encode($this->_convert($this->_userName . "|" . $this->_hashedUserPassword, 
         	$this->_config->getRsApiScrambleKey())), '+/=', '-_,');
+	}
+	
+	private function _setUserDataError ($error) {
+		$this->_userData->error = $error;
+		return $this->_userData;
 	}
 	
 	private function _verifyMasterKey ($key) {

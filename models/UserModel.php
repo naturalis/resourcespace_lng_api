@@ -9,7 +9,7 @@ final class UserModel extends CommonModel {
 	}
 	
 	public function userExists ($userName) {
-		$this->_prepare("select count(*) value from user where username = ?");
+		$this->_prepare("select count(*) from user where username = ?");
 		$this->_fetch(['s' => [$userName]]);
 		return $this->_res == 1;
 	}
@@ -41,12 +41,13 @@ final class UserModel extends CommonModel {
 	}
 	
 	public function saveUserData ($userName, $userId, $hashedUserPassword) {
+		$groupId = $this->_getGeneralUsersGroupId();
 		$this->_prepare("
 			update user set username=?, password=?, password_last_change=now(), fullname=?, email='', 
 				usergroup=?, ip_restrict='', search_filter_override='', comments='', approved=1
 			where ref=?");
-		$this->_update(['sssii' => [$userName, $hashedUserPassword, $userName, 
-			$this->_getGeneralUsersGroupId(), $userId]]);
+		$this->_insert(['sssii' => [$userName, $hashedUserPassword, $userName, 
+			$groupId, $userId]]);
 	}
 		
 }

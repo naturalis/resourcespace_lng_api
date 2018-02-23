@@ -29,24 +29,35 @@ class DatabaseModel {
 				$this->_settings->password,
 				$this->_settings->database
 			);
+			
 			if ($this->_mysqli->connect_errno) {
-				throw new \Exception("Failed to connect to MySQL: (" . 
-					$this->_mysqli->connect_errno . ") " . $this->_mysqli->connect_error);
+				throw new \Exception("Failed to connect to MySQL: " . 
+					$this->_mysqli->connect_error);
 			}
+			
+			// Error reporting
+			$driver = new \mysqli_driver();
+			$driver->report_mode = MYSQLI_REPORT_STRICT;
 		}
 		return $this->_mysqli;
 	}
 	
 	protected function _prepare ($query) {
 		if (!($this->_stmt = $this->_mysqli()->prepare($query))) {
-			throw new \Exception("Prepare failed: (" . $this->_mysqli()->errno . ") " . 
-				$this->_mysqli()->error);
+			throw new \Exception("MySQLi prepare failed: " . $this->_mysqli()->error);
+		}
+	}
+	
+	protected function _execute () {
+		if (!$this->_stmt->execute()) {
+			throw new \Exception("MySQLi execute failed: " . $this->_stmt->error);
 		}
 	}
 	
 	protected function _fetch ($params = false) {
+		$this->_freeResult();
 		$this->_bindParameters($params);
-		$this->_stmt->execute();
+		$this->_execute();
 		$this->_stmt->bind_result($this->_res);
 		$this->_stmt->fetch();
 		$this->_stmt->close();
@@ -54,16 +65,18 @@ class DatabaseModel {
 	}
 	
 	protected function _insert ($params) {
+		$this->_freeResult();
 		$this->_bindParameters($params);
-		$this->_stmt->execute();
+		$this->_execute();
 		$id = $this->_stmt->insert_id;
 		$this->_stmt->close();
 		return $id;
 	}
 	
 	protected function _update ($params) {
+		$this->_freeResult();
 		$this->_bindParameters($params);
-		$this->_stmt->execute();
+		$this->_execute();
 		$affected = $this->_stmt->affected_rows;
 		$this->_stmt->close();
 		return $affected;
@@ -77,16 +90,23 @@ class DatabaseModel {
 	 * Expects parameters in the form of [types => [value1, value2, etc]]
 	 */
 	protected function _bindParameters ($params) {
-		if (empty($params) || !is_array($params)) {
-			throw new \Exception('Bind parameters should be passed as array: [types => [value1, value2, etc]');
+		if (empty($params) || !is_array($params) || count($params) > 1) {
+			throw new \Exception('Error! Bind parameters should be passed as ' . 
+				'[(str)types => (array)[value1, value2, etc]');
 		}
-		// Types is the $params array key
-		$bind[] = key($params);
-		// Values are passed as the $params value; the values themselves should be passed by reference
-		foreach (array_values($params)[0] as $value) {
-			$bind[] = &$value;
+		// Values should be passed by reference
+		foreach (array_values($params)[0] as $key => $value) {
+			$bindParams[$key] = &array_values($params)[0][$key];
 		}
-		call_user_func_array([$this->_stmt, 'bind_param'], $bind);
+		// Prepend types string
+		array_unshift($bindParams, key($params));
+		$bind = new \ReflectionMethod('mysqli_stmt', 'bind_param'); 
+      	$bind->invokeArgs($this->_stmt, $bindParams); 
 	}
 	
+	private function _freeResult () {
+		if ($this->_stmt && $this->_stmt->num_rows() != 0) {
+			$this->_stmt->free_result();
+		}
+	}
 }

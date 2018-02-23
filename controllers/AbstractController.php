@@ -7,14 +7,33 @@ abstract class AbstractController {
 	protected $_config;
 	protected $_dbh;
 	
+	
 	public function __construct ($configPath = false) {
 		if (!$configPath) {
 			throw new \Exception('Error! '. get_class($this) . ' should be initialised ' .
-				'with path to RS config file!');
+				'with path to RS config file');
 		}
 		$this->_config = new ConfigController($configPath);
 	}
 	
+	public function apiLogin ($apiKey = false) {
+		if (!$apiKey) {
+			throw new \Exception('Error! No api key provided');
+		}
+		
+		var_dump($this->_decryptApiKey($apiKey)); die();
+		
+		list($userName, $hashedPassword) = $this->_decryptApiKey($apiKey);
+		return $this->_dbh->userLogin($userName, $hashedPassword);
+	}
+	
+	protected function _decryptApiKey ($key) {
+		$key = $this->_convert(base64_decode(strtr($key, '-_,', '+/=')), 
+			$this->_config->getRsApiScrambleKey());
+   		return explode("|", $key);
+	}
+	
+	// Exact copy of RS function 
 	protected function _convert ($text, $key = '') {
 	    // return text unaltered if the key is blank
 	    if ($key == '') {

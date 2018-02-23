@@ -8,6 +8,12 @@ class CommonModel extends DatabaseModel {
 		parent::__construct($config);
 	}
 	
+	public function userLogin ($userName, $hashedPassword) {
+		$this->_prepare("select ref,usergroup,account_expires from user where username=? and password=?");
+		$this->_fetch(['ss' => [$userName, $hashedPassword]]);
+		return $this->_res[0];
+	}
+	
 	protected function _getGeneralUsersGroupId () {
 		$res = $this->_mysqli()->query("select ref as value from usergroup where `name`='General Users'");
 		$row = $res->fetch_array(MYSQLI_NUM);
@@ -30,7 +36,6 @@ class CommonModel extends DatabaseModel {
 		$this->_prepare("INSERT IGNORE INTO user_dash_tile (user,dash_tile,order_by) VALUES (?,?,?)");
 		return $this->_insert(['iii' => [$userId, $tileId, $order]]);
 	}
-	
 	
 	
 }
