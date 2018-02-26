@@ -8,16 +8,24 @@ class CommonModel extends DatabaseModel {
 		parent::__construct($config);
 	}
 	
-	public function userLogin ($userName, $hashedPassword) {
-		$this->_prepare("select ref,usergroup,account_expires from user where username=? and password=?");
-		$this->_fetch(['ss' => [$userName, $hashedPassword]]);
-		return $this->_res[0];
+	public function userLogin ($userName, $hashedPassword, $isAdmin = false) {
+		$groupId = $isAdmin ? $this->_getUserGroupId('Super Admin') : 
+			$this->_getUserGroupId('General Users');
+
+		$this->_prepare("select ref from user where username=? and password=? and usergroup=?");
+		$this->_fetch(['ssi' => [$userName, $hashedPassword, $groupId]]);
+		if (!empty($this->_res)) {
+			$this->_prepare("update user set last_active=now() where ref=?");
+			$this->_update(['i' => [$this->_res]]);
+			return $this->_res;
+		}
+		return false;
 	}
-	
-	protected function _getGeneralUsersGroupId () {
-		$res = $this->_mysqli()->query("select ref as value from usergroup where `name`='General Users'");
-		$row = $res->fetch_array(MYSQLI_NUM);
-		return $row[0];
+
+	protected function _getUserGroupId ($groupName = false) {
+		$this->_prepare("select ref from usergroup where `name`=?");
+		$this->_fetch(['s' => [$groupName]]);
+		return $this->_res;
 	}
 	
 	protected function _getUserDashes () {

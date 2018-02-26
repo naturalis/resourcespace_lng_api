@@ -42,13 +42,20 @@ final class UserController extends AbstractController {
 				$this->_dbh->createNewUserDash($this->_userId);
 				$this->_collectionId = $this->_dbh->createCollection($this->_userId);
 				$this->_dbh->saveUserData($this->_userName, $this->_userId, $this->_hashedUserPassword);
-				return $this->getUserData();
 			}
+		} else {
+			$this->_setUserDataError("User $name already exists!");
 		}
-		return $this->_setUserDataError("User $name already exists!");
+		return $this->getUserData();
 	}
 	
 	public function getUserData () {
+		if (!empty($this->_userData->error)) {
+			// Make sure no data is returned but the error itself
+			$this->_userData->user_id = $this->_userData->password = 
+				$this->_userData->collection_id = $this->_userData->authentification_key = null;
+			return $this->_userData;
+		}
 		$this->_userData->user_id = $this->_userId;
 		$this->_userData->password = $this->_userPassword;
 		$this->_userData->collection_id = $this->_collectionId;

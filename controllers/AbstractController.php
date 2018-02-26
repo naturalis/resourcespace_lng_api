@@ -16,15 +16,17 @@ abstract class AbstractController {
 		$this->_config = new ConfigController($configPath);
 	}
 	
-	public function apiLogin ($apiKey = false) {
+	public function checkApiCredentials ($apiKey = false, $isAdmin = false) {
 		if (!$apiKey) {
 			throw new \Exception('Error! No api key provided');
 		}
-		
-		var_dump($this->_decryptApiKey($apiKey)); die();
-		
-		list($userName, $hashedPassword) = $this->_decryptApiKey($apiKey);
-		return $this->_dbh->userLogin($userName, $hashedPassword);
+		try {
+			list($userName, $hashedPassword) = $this->_decryptApiKey($apiKey);
+			$userId = $this->_dbh->userLogin($userName, $hashedPassword, $isAdmin);
+		} catch (\Exception $e) {
+			throw new \Exception('Error! Incorrect user credentials');
+		}
+		return $userId;
 	}
 	
 	protected function _decryptApiKey ($key) {

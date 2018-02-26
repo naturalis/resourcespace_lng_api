@@ -19,7 +19,7 @@ final class UserModel extends CommonModel {
 		$this->_userId = $this->_insert(['s' => [$userName]]);
 		return $this->_userId;
 	}
-
+	
 	public function createNewUserDash ($userId) {
 		foreach ($this->_getUserDashes() as $tile) {
 			 $this->_adduserTile($userId, $tile['tile'], $tile['order']);
@@ -41,7 +41,7 @@ final class UserModel extends CommonModel {
 	}
 	
 	public function saveUserData ($userName, $userId, $hashedUserPassword) {
-		$groupId = $this->_getGeneralUsersGroupId();
+		$groupId = $this->_getUserGroupId('General Users');
 		$this->_prepare("
 			update user set username=?, password=?, password_last_change=now(), fullname=?, email='', 
 				usergroup=?, ip_restrict='', search_filter_override='', comments='', approved=1
