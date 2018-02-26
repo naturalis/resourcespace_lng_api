@@ -8,7 +8,6 @@ class ConfigController {
 	private $_rsBaseUrl;
 	private $_rsApiScrambleKey;
 	private $_rsConfigPath;
-	private $_rsApiKeys;
 	
 	public function __construct ($config = false) {
 		if ($config) {
@@ -28,10 +27,6 @@ class ConfigController {
 		return $this->_rsApiScrambleKey;
 	}
 	
-	public function getRsApiKeys () {
-		return $this->_rsApiKeys;
-	}
-
 	private function _loadRsConfig ($config = false) {
 		if (!is_readable($config)) {
 			throw new \Exception ('Error! Check path ' . $config . ' to RS config file');
@@ -48,22 +43,6 @@ class ConfigController {
 		$this->_rsBaseUrl = $baseurl ?? false;
 		// Scramble key
 		$this->_rsApiScrambleKey = $api_scramble_key ?? false;
-		// Secret api keys
-		$this->_setApiKeys($api_keys_path ?? false);
 	}
 	
-	private function _setApiKeys ($apiKeyPath = false) {
-		if (!$apiKeyPath) {
-			throw new \Exception ('Error! $api_keys_path variable with valid api keys ' .
-				'must be present in RS config file!');
-		}
-		if (!is_readable($apiKeyPath)) {
-			throw new \Exception ('Error! Check path ' . $apiKeyPath . ' to valid api keys');
-		}
-		$keys = json_decode(file_get_contents($apiKeyPath));
-		if (!$keys) {
-			throw new \Exception ('Error! ' . $apiKeyPath . ' is not a valid json file');
-		}
-		$this->_rsApiKeys = $keys;
-	}
 }

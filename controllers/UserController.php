@@ -10,7 +10,6 @@ final class UserController extends AbstractController {
 	private $_hashedUserPassword;
 	private $_collectionId;
 	private $_userData;
-	private $_masterKey;
 
 	public function __construct ($configPath = false) {
 		// AbstractController creates Config object from file path
@@ -20,12 +19,7 @@ final class UserController extends AbstractController {
 		// Create object that will be returned to Linnaeus
 		$this->_initUserData();
 	}
-	
-	public function setMasterKey ($key) {
-		$this->_masterKey = $key;
-		return $this;
-	}
-	
+		
 	public function userExists ($name = null) {
 		if (!empty($name)) {
 			return $this->_dbh->userExists($name);
@@ -83,11 +77,5 @@ final class UserController extends AbstractController {
 		return $this->_userData;
 	}
 	
-	private function _verifyMasterKey ($key) {
-		if (empty($this->_masterKey)) {
-			throw new \Exception('Error! Master key not set yet, use ->setMasterKey() to set it');
-		}
-		return in_array($this->_masterKey, $this->_config->getRsApiKeys());
-	}
 
 }
