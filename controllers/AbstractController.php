@@ -6,7 +6,7 @@ abstract class AbstractController {
 	
 	protected $_config;
 	protected $_dbh;
-	
+	protected $_loginSucccessful = false;
 	
 	public function __construct ($configPath = false) {
 		if (!$configPath) {
@@ -16,17 +16,20 @@ abstract class AbstractController {
 		$this->_config = new ConfigController($configPath);
 	}
 	
-	public function checkApiCredentials ($apiKey = false, $isAdmin = false) {
+	protected function _checkApiCredentials ($apiKey = false, $isAdmin = false) {
 		if (!$apiKey) {
 			throw new \Exception('Error! No api key provided');
 		}
-		try {
-			list($userName, $hashedPassword) = $this->_decryptApiKey($apiKey);
+		$userData = $this->_decryptApiKey($apiKey);
+		// RS should return array with user and hashed password; 
+		// if incorrect the aray only contains a single element
+		if (count($userData) == 2) {
+			list($userName, $hashedPassword) = $userData;
 			$userId = $this->_dbh->userLogin($userName, $hashedPassword, $isAdmin);
-		} catch (\Exception $e) {
-			throw new \Exception('Error! Incorrect user credentials');
+			$this->_loginSucccessful = !empty($userId) ? true : false;
+			return true;
 		}
-		return $userId;
+		return false;
 	}
 	
 	protected function _decryptApiKey ($key) {
@@ -35,7 +38,7 @@ abstract class AbstractController {
    		return explode("|", $key);
 	}
 	
-	// Exact copy of RS function 
+	// Exact clone of RS function 
 	protected function _convert ($text, $key = '') {
 	    // return text unaltered if the key is blank
 	    if ($key == '') {

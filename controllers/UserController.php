@@ -27,8 +27,20 @@ final class UserController extends AbstractController {
 		return false;
 	}
 	
+	public function checkApiCredentials ($apiKey = false) {
+		if (!$apiKey) {
+			$this->_setUserDataError('Error! No api key provided');
+		// User MUST be admin to create new users!
+		} else if (!$this->_checkApiCredentials($apiKey, true)) {
+			$this->_setUserDataError('Error! Incorrect api key provided');
+		}
+		return $this;
+	}
+	
 	public function createUser ($name = null) {
-		if (!$this->userExists($name)) {
+		if (!$this->_loginSucccessful) {
+			$this->_setUserDataError("Error! Login failed");
+		} else if (!$this->userExists($name)) {
 			$this->_userName = $name;
 			$this->_createUserPassword();
 			$this->_userId = $this->_dbh->createUser($this->_userName);
@@ -46,10 +58,11 @@ final class UserController extends AbstractController {
 	public function getUserData () {
 		if (!empty($this->_userData->error)) {
 			// Make sure no data is returned but the error itself
-			$this->_userData->user_id = $this->_userData->password = 
-				$this->_userData->collection_id = $this->_userData->authentification_key = null;
+			unset($this->_userData->user_id, $this->_userData->password,
+				$this->_userData->collection_id, $this->_userData->authentification_key);
 			return $this->_userData;
 		}
+		$this->_userData->user_name = $this->_userName;
 		$this->_userData->user_id = $this->_userId;
 		$this->_userData->password = $this->_userPassword;
 		$this->_userData->collection_id = $this->_collectionId;
@@ -77,5 +90,4 @@ final class UserController extends AbstractController {
 		return $this->_userData;
 	}
 	
-
 }
