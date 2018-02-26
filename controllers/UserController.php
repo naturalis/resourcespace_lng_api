@@ -9,7 +9,7 @@ final class UserController extends AbstractController {
 	private $_userPassword;
 	private $_hashedUserPassword;
 	private $_collectionId;
-	private $_userData;
+	private $_response;
 
 	public function __construct ($configPath = false) {
 		// AbstractController creates Config object from file path
@@ -17,7 +17,7 @@ final class UserController extends AbstractController {
 		// Initialise model with Config object
 		$this->_dbh = new UserModel($this->_config);
 		// Create object that will be returned to Linnaeus
-		$this->_initUserData();
+		$this->_initResponse();
 	}
 		
 	public function userExists ($name = null) {
@@ -29,17 +29,17 @@ final class UserController extends AbstractController {
 	
 	public function checkApiCredentials ($apiKey = false) {
 		if (!$apiKey) {
-			$this->_setUserDataError('Error! No api key provided');
+			$this->_setResponseError('Error! No api key provided');
 		// User MUST be admin to create new users!
 		} else if (!$this->_checkApiCredentials($apiKey, true)) {
-			$this->_setUserDataError('Error! Incorrect api key provided');
+			$this->_setResponseError('Error! Incorrect api key provided');
 		}
 		return $this;
 	}
 	
 	public function createUser ($name = null) {
 		if (!$this->_loginSucccessful) {
-			$this->_setUserDataError("Error! Login failed");
+			$this->_setResponseError("Error! Login failed");
 		} else if (!$this->userExists($name)) {
 			$this->_userName = $name;
 			$this->_createUserPassword();
@@ -50,24 +50,24 @@ final class UserController extends AbstractController {
 				$this->_dbh->saveUserData($this->_userName, $this->_userId, $this->_hashedUserPassword);
 			}
 		} else {
-			$this->_setUserDataError("User $name already exists!");
+			$this->_setResponseError("User $name already exists!");
 		}
-		return $this->getUserData();
+		return $this->getResponse();
 	}
 	
-	public function getUserData () {
-		if (!empty($this->_userData->error)) {
+	public function getResponse () {
+		if (!empty($this->_response->error)) {
 			// Make sure no data is returned but the error itself
-			unset($this->_userData->user_id, $this->_userData->password,
-				$this->_userData->collection_id, $this->_userData->authentification_key);
-			return $this->_userData;
+			unset($this->_response->user_id, $this->_response->password,
+				$this->_response->collection_id, $this->_response->authentification_key);
+			return $this->_response;
 		}
-		$this->_userData->user_name = $this->_userName;
-		$this->_userData->user_id = $this->_userId;
-		$this->_userData->password = $this->_userPassword;
-		$this->_userData->collection_id = $this->_collectionId;
-		$this->_userData->authentification_key = $this->_makeApiKey();	
-		return $this->_userData;
+		$this->_response->user_name = $this->_userName;
+		$this->_response->user_id = $this->_userId;
+		$this->_response->password = $this->_userPassword;
+		$this->_response->collection_id = $this->_collectionId;
+		$this->_response->authentification_key = $this->_makeApiKey();	
+		return $this->_response;
 	}
 	
 	private function _createUserPassword () {
@@ -75,19 +75,19 @@ final class UserController extends AbstractController {
 		$this->_hashedUserPassword = hash('sha256', md5('RS' . $this->_userName . $this->_userPassword));
 	}
 	
-	private function _initUserData () {
-		$this->_userData = new \stdClass();
-		$this->_userData->error = null;
+	private function _initResponse () {
+		$this->_response = new \stdClass();
+		$this->_response->error = null;
 	}
 	
+	private function _setResponseError ($error) {
+		$this->_response->error = $error;
+		return $this->_response;
+	}
 	private function _makeApiKey () {
         return strtr(base64_encode($this->_convert($this->_userName . "|" . $this->_hashedUserPassword, 
         	$this->_config->getRsApiScrambleKey())), '+/=', '-_,');
 	}
 	
-	private function _setUserDataError ($error) {
-		$this->_userData->error = $error;
-		return $this->_userData;
-	}
 	
 }

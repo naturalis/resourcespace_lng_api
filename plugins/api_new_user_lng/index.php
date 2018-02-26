@@ -18,6 +18,4 @@ $user
 	->createUser(base64_encode(random_bytes(10)));
 
 header('Content-Type: application/json');
-die(json_encode($user->getuserData()));
-
-
+die(json_encode($user->getResponse()));
