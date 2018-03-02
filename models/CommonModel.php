@@ -12,13 +12,13 @@ class CommonModel extends DatabaseModel {
 		$groupId = $isAdmin ? $this->_getUserGroupId('Super Admin') : 
 			$this->_getUserGroupId('General Users');
 		
-		$this->_prepare("select ref from user where username=? and password=? and usergroup=?");
+		$this->_prepare("select ref from user where username=? and password=? and usergroup>=?");
 		$this->_fetch(['ssi' => [$userName, $hashedPassword, $groupId]]);
 		
 		if (!empty($this->_res)) {
 			$this->_prepare("update user set last_active=now() where ref=?");
 			$this->_update(['i' => [$this->_res]]);
-			return true;
+			return $this->_res;
 		}
 		return false;
 	}

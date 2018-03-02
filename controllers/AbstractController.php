@@ -4,9 +4,16 @@ namespace RsApi;
 
 abstract class AbstractController {
 	
+	// Config object
 	protected $_config;
+	// Database handler
 	protected $_dbh;
+	// Login verification
 	protected $_loginSucccessful = false;
+	// RS user id of api user (set after successful login)
+	protected $_apiUserId;
+	// Api response
+	protected $_response;
 	
 	public function __construct ($configPath = false) {
 		if (!$configPath) {
@@ -14,6 +21,7 @@ abstract class AbstractController {
 				'with path to RS config file');
 		}
 		$this->_config = new ConfigController($configPath);
+		$this->_initResponse();
 	}
 	
 	protected function _checkApiCredentials ($apiKey = false, $isAdmin = false) {
@@ -25,8 +33,8 @@ abstract class AbstractController {
 		// if incorrect the aray only contains a single element
 		if (count($userData) == 2) {
 			list($userName, $hashedPassword) = $userData;
-			$userId = $this->_dbh->userLogin($userName, $hashedPassword, $isAdmin);
-			$this->_loginSucccessful = !empty($userId) ? true : false;
+			$this->_apiUserId = $this->_dbh->userLogin($userName, $hashedPassword, $isAdmin);
+			$this->_loginSucccessful = !empty($this->_apiUserId) ? true : false;
 			return true;
 		}
 		return false;
@@ -72,6 +80,28 @@ abstract class AbstractController {
 	
 	    return $text;
 	} 
-		
+	
+	// By default response is an object with just an (empty) error property
+	protected function _initResponse ($error = null) {
+		$this->_response = new \stdClass();
+		$this->_response->error = $error;
+		return $this->_response;
+	}
+	
+	protected function _setResponseError ($error) {
+		$this->_response->error = $error;
+		return $this->_response;
+	}
+	
+	// Copy of RS method but with redundant options stripped off
+	protected function _runCommand ($command) {
+	    # Works like system(), but returns the complete output string rather than just the
+	    # last line of it.
+	    $process = @proc_open($command, [1 => ['pipe', 'w']], $pipe, NULL, NULL, ['bypass_shell' => true]);
+	    if (is_resource($process)) {
+	        return trim(stream_get_contents($pipe[1]));
+	    }
+	    return '';
+	}
 	
 }

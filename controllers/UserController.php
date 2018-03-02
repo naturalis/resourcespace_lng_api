@@ -9,15 +9,12 @@ final class UserController extends AbstractController {
 	private $_userPassword;
 	private $_hashedUserPassword;
 	private $_collectionId;
-	private $_response;
 
 	public function __construct ($configPath = false) {
 		// AbstractController creates Config object from file path
 		parent::__construct($configPath);
 		// Initialise model with Config object
 		$this->_dbh = new UserModel($this->_config);
-		// Create object that will be returned to Linnaeus
-		$this->_initResponse();
 	}
 		
 	public function userExists ($name = null) {
@@ -27,6 +24,7 @@ final class UserController extends AbstractController {
 		return false;
 	}
 	
+	// Controller specific: user must be superadmin to add another user!
 	public function checkApiCredentials ($apiKey = false) {
 		if (!$apiKey) {
 			$this->_setResponseError('Error! No api key provided');
@@ -57,10 +55,9 @@ final class UserController extends AbstractController {
 	
 	public function getResponse () {
 		if (!empty($this->_response->error)) {
-			// Make sure no data is returned but the error itself
-			unset($this->_response->user_id, $this->_response->password,
-				$this->_response->collection_id, $this->_response->authentification_key);
-			return $this->_response;
+			// Make sure no data is returned but the error itself;
+			// re-initalise response with current error
+			return $this->_initResponse($this->_response->error);
 		}
 		$this->_response->user_name = $this->_userName;
 		$this->_response->user_id = $this->_userId;
@@ -75,15 +72,6 @@ final class UserController extends AbstractController {
 		$this->_hashedUserPassword = hash('sha256', md5('RS' . $this->_userName . $this->_userPassword));
 	}
 	
-	private function _initResponse () {
-		$this->_response = new \stdClass();
-		$this->_response->error = null;
-	}
-	
-	private function _setResponseError ($error) {
-		$this->_response->error = $error;
-		return $this->_response;
-	}
 	private function _makeApiKey () {
         return strtr(base64_encode($this->_convert($this->_userName . "|" . $this->_hashedUserPassword, 
         	$this->_config->getRsApiScrambleKey())), '+/=', '-_,');

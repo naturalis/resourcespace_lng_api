@@ -14,10 +14,10 @@ final class UserModel extends CommonModel {
 		return $this->_res == 1;
 	}
 	
+	// Returns id of created user
 	public function createUser ($userName) {
 		$this->_prepare("insert into user(username) values (?)");
-		$this->_userId = $this->_insert(['s' => [$userName]]);
-		return $this->_userId;
+		return $this->_insert(['s' => [$userName]]);
 	}
 	
 	public function createNewUserDash ($userId) {
