@@ -101,7 +101,7 @@ abstract class AbstractController {
 	    if (is_resource($process)) {
 	        return trim(stream_get_contents($pipe[1]));
 	    }
-	    return '';
+	    return false;
 	}
 	
 }

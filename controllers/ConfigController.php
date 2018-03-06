@@ -39,7 +39,7 @@ class ConfigController {
 	}
 	
 	public function getImageMagickPath () {
-		return $this->_scrambleKey;
+		return $this->_imageMagickPath;
 	}
 	
 	private function _loadRsConfig ($config = false) {
