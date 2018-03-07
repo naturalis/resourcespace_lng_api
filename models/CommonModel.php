@@ -23,6 +23,18 @@ class CommonModel extends DatabaseModel {
 		return false;
 	}
 
+	public function userExists ($userName) {
+		$this->_prepare("select count(*) from user where username = ?");
+		$this->_fetch(['s' => [$userName]]);
+		return $this->_res == 1;
+	}
+	
+	public function collectionExists ($collectionId) {
+		$this->_prepare("select name from collection where ref=?");
+		$this->_fetch(['i' => [$collectionId]]);
+		return !empty($this->_res);
+	}
+	
 	protected function _getUserGroupId ($groupName = false) {
 		$this->_prepare("select ref from usergroup where `name`=?");
 		$this->_fetch(['s' => [$groupName]]);
@@ -39,11 +51,6 @@ class CommonModel extends DatabaseModel {
 					(SELECT DISTINCT user_dash_tile.dash_tile FROM user_dash_tile))) 
 			ORDER BY default_order_by");
 		return $res ? $res->fetch_all(MYSQLI_ASSOC) : null;
-	}
-	
-	protected function _adduserTile ($userId, $tileId, $order) {
-		$this->_prepare("INSERT IGNORE INTO user_dash_tile (user,dash_tile,order_by) VALUES (?,?,?)");
-		return $this->_insert(['iii' => [$userId, $tileId, $order]]);
 	}
 	
 	

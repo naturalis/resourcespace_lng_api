@@ -21,6 +21,11 @@ final class UploadModel extends CommonModel {
 		return $this->_update(['sssi' => [$extension, $title, $fileName, $resourceId]]);
 	}
 	
+	public function addResourceToCollection ($resourceId, $collectionId) {
+		$this->_prepare("insert into collection_resource(resource,collection) values (?,?)");
+		return $this->_insert(['ii' => [$resourceId, $collectionId]]);
+	}
+	
 	public function getPreviewSizes () {
 		$res = $this->_mysqli()->query("select * from preview_size 
 			order by width desc, height desc");

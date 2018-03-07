@@ -101,12 +101,7 @@ require_once '../../Autoloader.php';
  */
 
 
-
-
-/*
- * 
- *  Array ( [name] => prince.png [type] => image/png [tmp_name] => /Applications/MAMP/tmp/php/phpcvfLB8 [error] => 0 [size] => 34842 ) 
- */
+// Test data!
 $_FILES['userfile'] = [
 	'name' => 'prince.png',
 	'type' => 'image/png',
@@ -115,9 +110,7 @@ $_FILES['userfile'] = [
 	'size' => 34842
 ];
 $_GET['field8'] = 'henk';
-
-// title = $_GET['field8']
-// collectionId = $_GET['collection']
+$_GET['collection'] = 1;
 
 
 // Path to RS config file
@@ -133,7 +126,6 @@ $upload = new RsApi\UploadController($rsConfigPath);
 $upload
 	->checkApiCredentials($key)
 	->createResource();
-
 
 header('Content-Type: application/json');
 die(json_encode($upload->getResponse()));

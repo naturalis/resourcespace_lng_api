@@ -8,12 +8,6 @@ final class UserModel extends CommonModel {
 		parent::__construct($config);
 	}
 	
-	public function userExists ($userName) {
-		$this->_prepare("select count(*) from user where username = ?");
-		$this->_fetch(['s' => [$userName]]);
-		return $this->_res == 1;
-	}
-	
 	// Returns id of created user
 	public function createUser ($userName) {
 		$this->_prepare("insert into user(username) values (?)");
@@ -49,5 +43,11 @@ final class UserModel extends CommonModel {
 		$this->_insert(['sssii' => [$userName, $hashedUserPassword, $userName, 
 			$groupId, $userId]]);
 	}
-		
+
+	private function _adduserTile ($userId, $tileId, $order) {
+		$this->_prepare("INSERT IGNORE INTO user_dash_tile (user,dash_tile,order_by) VALUES (?,?,?)");
+		return $this->_insert(['iii' => [$userId, $tileId, $order]]);
+	}
+	
+	
 }

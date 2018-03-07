@@ -28,9 +28,11 @@ final class UserController extends AbstractController {
 	public function checkApiCredentials ($apiKey = false) {
 		if (!$apiKey) {
 			$this->_setResponseError('Error! No api key provided');
+			return $this->getResponse();
 		// User MUST be admin to create new users!
 		} else if (!$this->_checkApiCredentials($apiKey, true)) {
 			$this->_setResponseError('Error! Incorrect api key provided');
+			return $this->getResponse();
 		}
 		return $this;
 	}
@@ -53,6 +55,7 @@ final class UserController extends AbstractController {
 		return $this->getResponse();
 	}
 	
+	// Formatted response
 	public function getResponse () {
 		if (!empty($this->_response->error)) {
 			// Make sure no data is returned but the error itself;
