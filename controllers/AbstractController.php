@@ -40,6 +40,11 @@ abstract class AbstractController {
 		return false;
 	}
 	
+	protected function _makeApiKey ($userName, $hashedPassword) {
+        return strtr(base64_encode($this->_convert($userName . "|" . $hashedPassword, 
+        	$this->_config->getRsApiScrambleKey())), '+/=', '-_,');
+	}
+	
 	protected function _decryptApiKey ($key) {
 		$key = $this->_convert(base64_decode(strtr($key, '-_,', '+/=')), 
 			$this->_config->getRsApiScrambleKey());
@@ -101,7 +106,7 @@ abstract class AbstractController {
 	    if (is_resource($process)) {
 	        return trim(stream_get_contents($pipe[1]));
 	    }
-	    return false;
+	    return '';
 	}
 	
 }

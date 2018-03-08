@@ -25,12 +25,12 @@ final class UserController extends AbstractController {
 	}
 	
 	// Controller specific: user must be superadmin to add another user!
-	public function checkApiCredentials ($apiKey = false) {
-		if (!$apiKey) {
+	public function checkApiCredentials () {
+		if (!isset($_GET['key'])) {
 			$this->_setResponseError('Error! No api key provided');
 			return $this->getResponse();
 		// User MUST be admin to create new users!
-		} else if (!$this->_checkApiCredentials($apiKey, true)) {
+		} else if (!$this->_checkApiCredentials($_GET['key'], true)) {
 			$this->_setResponseError('Error! Incorrect api key provided');
 			return $this->getResponse();
 		}
@@ -66,7 +66,8 @@ final class UserController extends AbstractController {
 		$this->_response->user_id = $this->_userId;
 		$this->_response->password = $this->_userPassword;
 		$this->_response->collection_id = $this->_collectionId;
-		$this->_response->authentification_key = $this->_makeApiKey();	
+		$this->_response->authentification_key = 
+			$this->_makeApiKey($this->_userName, $this->_hashedUserPassword);	
 		return $this->_response;
 	}
 	
@@ -75,10 +76,6 @@ final class UserController extends AbstractController {
 		$this->_hashedUserPassword = hash('sha256', md5('RS' . $this->_userName . $this->_userPassword));
 	}
 	
-	private function _makeApiKey () {
-        return strtr(base64_encode($this->_convert($this->_userName . "|" . $this->_hashedUserPassword, 
-        	$this->_config->getRsApiScrambleKey())), '+/=', '-_,');
-	}
 	
 	
 }

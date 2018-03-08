@@ -36,16 +36,12 @@ final class UploadController extends AbstractController {
 		parent::__construct($configPath);
 		// Initialise model with Config object
 		$this->_dbh = new UploadModel($this->_config);
-		// Import config settings into local properties
 		$this->_storageDir = $this->_config->getStorageDir();
 		$this->_scrambleKey = $this->_config->getScrambleKey();
 		$this->_baseUrl = $this->_config->getRsBaseUrl();
-		// Set up containers for file data in response
-		$this->_files = [];
-		$this->_thumbnails = new \stdClass();
 		// Create file object with posted data; includes simple bootstrap
 		try {
-			$this->_createFile();
+			$this->_initFile();
 		} catch (\Exception $e) {
 			$this->_setResponseError($e->getMessage());
 			return $this->getResponse();		
@@ -53,12 +49,12 @@ final class UploadController extends AbstractController {
 	}
 	
 	// Controller specific: user must be superadmin to add another user!
-	public function checkApiCredentials ($apiKey = false) {
-		if (!$apiKey) {
+	public function checkApiCredentials () {
+		if (!isset($_GET['key'])) {
 			$this->_setResponseError('Error! No api key provided');
 			return $this->getResponse();
 		// User MUST be admin to create new users!
-		} else if (!$this->_checkApiCredentials($apiKey)) {
+		} else if (!$this->_checkApiCredentials($_GET['key'])) {
 			$this->_setResponseError('Error! Incorrect api key provided');
 			return $this->getResponse();
 		}
@@ -244,9 +240,9 @@ copy($_FILES['userfile']['tmp_name'], $this->_file->rsPath);
 			"." . $extension;
 	}
 	
-	// Creates file object with data pertaining to uploaded file; 
-	// added bonus: does some basic bootstrapping as well!
-	private function _createFile () {
+	// Initialises file object with data pertaining to uploaded file; 
+	// added bonus: some basic bootstrapping
+	private function _initFile () {
 		if (empty($_FILES['userfile'])) {
 			throw new \Exception ('Error! No file to process');
 		}
@@ -262,6 +258,9 @@ copy($_FILES['userfile']['tmp_name'], $this->_file->rsPath);
 			throw new \Exception ('Error! Collection with id ' . 
 				$this->_file->collectionId . ' does not exist');
 		}
+		// Empty containers to store image data
+		$this->_files = [];
+		$this->_thumbnails = new \stdClass();
 		return $this->_file;
 	}
 	

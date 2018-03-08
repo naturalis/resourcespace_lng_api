@@ -111,20 +111,23 @@ $_FILES['userfile'] = [
 ];
 $_GET['field8'] = 'henk';
 $_GET['collection'] = 1;
+// Normal -- test
+$_GET['key'] = 'a3NyMiR_ZVZZcEM1W3Y5OGkqJCB1Jzw3Izk3NyQtIyAnJj8xJWc8MCUhISMmIDtnIWQ3NXF7LCJydz4yIzA3NSwsI3cjdD1jImUxMC0qdnYi';
+// Admin -- test
+// $_GET['key'] = 'JjEzNCFlIyYjJmtgdThgZycvcnMjcWw8cDdgY3R6JCMlJj5hJ2IyY3R9cCIjIDxjJzU0MiV6J3FzIjhgK2c8N3MpJy0gJw,,';
+
+
+
 
 
 // Path to RS config file
 $rsConfigPath = '/Users/ruud/Documents/MAMP/htdocs/resourcespace/include/config.php';
 
-// Normal -- test
-$key = 'a3NyMiR_ZVZZcEM1W3Y5OGkqJCB1Jzw3Izk3NyQtIyAnJj8xJWc8MCUhISMmIDtnIWQ3NXF7LCJydz4yIzA3NSwsI3cjdD1jImUxMC0qdnYi';
-// Admin -- test
-//$key = 'JjEzNCFlIyYjJmtgdThgZycvcnMjcWw8cDdgY3R6JCMlJj5hJ2IyY3R9cCIjIDxjJzU0MiV6J3FzIjhgK2c8N3MpJy0gJw,,';
 
 // Controllers MUST be initiased with path to RS config file!
 $upload = new RsApi\UploadController($rsConfigPath);
 $upload
-	->checkApiCredentials($key)
+	->checkApiCredentials()
 	->createResource();
 
 header('Content-Type: application/json');

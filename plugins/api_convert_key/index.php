@@ -11,19 +11,19 @@ require_once '../../Autoloader.php';
  * QkdoQlpdX29-VEdvWnY5OGl6cHEjIz0ydmRiNicqI3ciczo1JzlgPSd8LCUjI2kwIzM1YXcqcnNzI2hmIjU9NnR9dyZ0dj4xcDc8YCMuJCAl
  */
 
+
+
 // Normal -- test
 // $_GET['key'] = 'a3NyMiR_ZVZZcEM1W3Y5OGkqJCB1Jzw3Izk3NyQtIyAnJj8xJWc8MCUhISMmIDtnIWQ3NXF7LCJydz4yIzA3NSwsI3cjdD1jImUxMC0qdnYi';
 // Admin -- test
-$_GET['key'] = 'QkdoQlpdX29-VEdvWnY5OGl6cHEjIz0ydmRiNicqI3ciczo1JzlgPSd8LCUjI2kwIzM1YXcqcnNzI2hmIjU9NnR9dyZ0dj4xcDc8YCMuJCAl';
-
+// $_GET['key'] = 'QkdoQlpdX29-VEdvWnY5OGl6cHEjIz0ydmRiNicqI3ciczo1JzlgPSd8LCUjI2kwIzM1YXcqcnNzI2hmIjU9NnR9dyZ0dj4xcDc8YCMuJCAl';
+$_GET['key'] = 'cnxobWp_MWx1PD1wLWcyZ2A2PnZqY3ctNzIxOzA8JT4zKyE8YDNnOm4lPGB1KmNlMWVgPyQ4ZnZ-MTU1Nzo_dDEwICw3YA,,';
 // Path to RS config file
 $rsConfigPath = '/Users/ruud/Documents/MAMP/htdocs/resourcespace/include/config.php';
 
 // Controllers MUST be initiased with path to RS config file!
-$user = new RsApi\UserController($rsConfigPath);
-$user	
-	->checkApiCredentials()
-	->createUser(base64_encode(random_bytes(10)));
+$converter = new RsApi\KeyConverterController($rsConfigPath);
+$converter->convertKey(false);
 
 header('Content-Type: application/json');
-die(json_encode($user->getResponse()));
+die(json_encode($converter->getResponse()));
