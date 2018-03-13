@@ -46,6 +46,9 @@ abstract class AbstractController {
 	}
 	
 	protected function _decryptApiKey ($key) {
+		
+		//$key=convert(base64_decode(strtr($key, '-_,', '+/=')),$api_scramble_key);
+		
 		$key = $this->_convert(base64_decode(strtr($key, '-_,', '+/=')), 
 			$this->_config->getRsApiScrambleKey());
    		return explode("|", $key);

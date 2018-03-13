@@ -112,7 +112,7 @@ $_FILES['userfile'] = [
 $_GET['field8'] = 'henk';
 $_GET['collection'] = 1;
 // Normal -- test
-$_GET['key'] = 'a3NyMiR_ZVZZcEM1W3Y5OGkqJCB1Jzw3Izk3NyQtIyAnJj8xJWc8MCUhISMmIDtnIWQ3NXF7LCJydz4yIzA3NSwsI3cjdD1jImUxMC0qdnYi';
+//$_GET['key'] = 'a3NyMiR_ZVZZcEM1W3Y5OGkqJCB1Jzw3Izk3NyQtIyAnJj8xJWc8MCUhISMmIDtnIWQ3NXF7LCJydz4yIzA3NSwsI3cjdD1jImUxMC0qdnYi';
 // Admin -- test
 // $_GET['key'] = 'JjEzNCFlIyYjJmtgdThgZycvcnMjcWw8cDdgY3R6JCMlJj5hJ2IyY3R9cCIjIDxjJzU0MiV6J3FzIjhgK2c8N3MpJy0gJw,,';
 
