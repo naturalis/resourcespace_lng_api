@@ -53,7 +53,7 @@ final class UploadController extends AbstractController {
 		if (!isset($_GET['key'])) {
 			$this->_setResponseError('Error! No api key provided');
 			return $this->getResponse();
-		// User MUST be admin to create new users!
+		// No admin credentials needed here
 		} else if (!$this->_checkApiCredentials($_GET['key'])) {
 			$this->_setResponseError('Error! Incorrect api key provided');
 			return $this->getResponse();
@@ -62,6 +62,7 @@ final class UploadController extends AbstractController {
 	}
 	
 	public function createResource () {
+		$this->checkApiCredentials();
 		if (!$this->_loginSucccessful || empty($this->_apiUserId)) {
 			$this->_setResponseError('Error! Login failed');
 			return $this->getResponse();

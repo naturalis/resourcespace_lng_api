@@ -126,9 +126,7 @@ $rsConfigPath = '/Users/ruud/Documents/MAMP/htdocs/resourcespace/include/config.
 
 // Controllers MUST be initiased with path to RS config file!
 $upload = new RsApi\UploadController($rsConfigPath);
-$upload
-	->checkApiCredentials()
-	->createResource();
+$upload->createResource();
 
 header('Content-Type: application/json');
 die(json_encode($upload->getResponse()));

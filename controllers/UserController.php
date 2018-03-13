@@ -38,6 +38,7 @@ final class UserController extends AbstractController {
 	}
 	
 	public function createUser ($name = null) {
+		$this->checkApiCredentials();
 		if (!$this->_loginSucccessful) {
 			$this->_setResponseError("Error! Login failed");
 		} else if (!$this->userExists($name)) {

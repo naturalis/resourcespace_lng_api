@@ -21,9 +21,7 @@ $rsConfigPath = '/Users/ruud/Documents/MAMP/htdocs/resourcespace/include/config.
 
 // Controllers MUST be initiased with path to RS config file!
 $user = new RsApi\UserController($rsConfigPath);
-$user	
-	->checkApiCredentials()
-	->createUser(base64_encode(random_bytes(10)));
+$user->createUser(base64_encode(random_bytes(10)));
 
 header('Content-Type: application/json');
 die(json_encode($user->getResponse()));

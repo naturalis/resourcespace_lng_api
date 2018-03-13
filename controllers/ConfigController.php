@@ -57,7 +57,7 @@ class ConfigController {
 		$this->_dbSettings = $db;		
 		// Base url
 		$this->_rsBaseUrl = $baseurl ?? false;
-		// Scramble key
+		// Scramble key for api access
 		$this->_rsApiScrambleKey = $api_scramble_key ?? false;
 		// Scramble key for file paths
 		$this->_scrambleKey = $scramble_key ?? false;
