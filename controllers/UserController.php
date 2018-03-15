@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Creates new RS user and returns relevant data in json format
+ * 
+ * This class MUST be initialised with a path to the RS config file.
+ * The config file contains the database credentials plus hash keys 
+ * for api access and password obfuscation.
+ * 
+ * NB: RS admin credentials are required to create a new user!
+ * 
+ * Required data:
+	$_GET['key'] = 'abcdef123456'; // RS api key
+	$_GET['newuser'] = 'User Name'; // user name
+ */
+
 namespace RsApi;
 
 final class UserController extends AbstractController {
@@ -84,7 +98,4 @@ final class UserController extends AbstractController {
 		$this->_userPassword = bin2hex(openssl_random_pseudo_bytes(4));
 		$this->_hashedUserPassword = hash('sha256', md5('RS' . $this->_userName . $this->_userPassword));
 	}
-	
-	
-	
 }

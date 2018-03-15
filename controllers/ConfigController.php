@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * Processes RS config file
+ */
+
 namespace RsApi;
 
 class ConfigController {

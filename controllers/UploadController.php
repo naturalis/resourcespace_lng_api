@@ -1,5 +1,26 @@
 <?php
 
+/**
+ * Creates uploads a file, creates preview images, adds data to RS 
+ * and returns relevant data in json format
+ * 
+ * This class MUST be initialised with a path to the RS config file.
+ * The config file contains the database credentials plus hash keys 
+ * for api access and password obfuscation.
+ * 
+ * Required data:
+	$_FILES['userfile'] = [
+		'name' => 'test.png',
+		'type' => 'image/png',
+		'tmp_name' => '/tmp/test.png',
+		'error' => 0,
+		'size' => 34842
+	]; // uploaded file
+	$_GET['key'] = 'abcdef123456'; // RS api key
+	$_GET['collection'] = 1; // RS collection id
+	$_GET['field8'] = 'title'; // title of image (optional)
+*/
+
 namespace RsApi;
 
 require_once 'AbstractController.php';
@@ -204,7 +225,7 @@ final class UploadController extends AbstractController {
 		return false;
 	}
 	
-	// CLone of RS method
+	// Clone of RS method
 	private function _setScramblePath () {
 		if ($this->_scrambleKey && $this->_file->resourceId) {
 			return substr(md5($this->_file->resourceId . "_" . $this->_scrambleKey), 0, 15);
