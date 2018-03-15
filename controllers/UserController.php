@@ -15,6 +15,9 @@ final class UserController extends AbstractController {
 		parent::__construct($configPath);
 		// Initialise model with Config object
 		$this->_dbh = new UserModel($this->_config);
+		if (isset($_GET['newuser'])) {
+			$this->_userName = $_GET['newuser'];
+		}
 	}
 		
 	public function userExists ($name = null) {
@@ -38,11 +41,16 @@ final class UserController extends AbstractController {
 	}
 	
 	public function createUser ($name = null) {
+		if (!is_null($name)) {
+			$this->_userName = $name;
+		}
 		$this->checkApiCredentials();
 		if (!$this->_loginSucccessful) {
 			$this->_setResponseError("Error! Login failed");
+		// User name not provided (neither through url not passed directly)
+		} else if (empty($this->_userName)) {
+			$this->_setResponseError("Error! No user name provided for new user");
 		} else if (!$this->userExists($name)) {
-			$this->_userName = $name;
 			$this->_createUserPassword();
 			$this->_userId = $this->_dbh->createUser($this->_userName);
 			if (!empty($this->_userId)) {
@@ -63,7 +71,7 @@ final class UserController extends AbstractController {
 			// re-initalise response with current error
 			return $this->_initResponse($this->_response->error);
 		}
-		$this->_response->user_name = $this->_userName;
+		$this->_response->username = $this->_userName;
 		$this->_response->user_id = $this->_userId;
 		$this->_response->password = $this->_userPassword;
 		$this->_response->collection_id = $this->_collectionId;

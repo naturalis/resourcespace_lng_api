@@ -99,7 +99,7 @@ require_once '../../Autoloader.php';
 )
 
  */
-
+/*
 
 // Test data!
 $_FILES['userfile'] = [
@@ -111,6 +111,9 @@ $_FILES['userfile'] = [
 ];
 $_GET['field8'] = 'henk';
 $_GET['collection'] = 1;
+*/
+
+
 // Normal -- test
 //$_GET['key'] = 'a3NyMiR_ZVZZcEM1W3Y5OGkqJCB1Jzw3Izk3NyQtIyAnJj8xJWc8MCUhISMmIDtnIWQ3NXF7LCJydz4yIzA3NSwsI3cjdD1jImUxMC0qdnYi';
 // Admin -- test

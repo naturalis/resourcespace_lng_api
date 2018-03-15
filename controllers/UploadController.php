@@ -80,7 +80,7 @@ final class UploadController extends AbstractController {
         	$this->_file->rsPath = $this->_getResourcePath();
         	
 // for testing purposes!
-copy($_FILES['userfile']['tmp_name'], $this->_file->rsPath);
+// copy($_FILES['userfile']['tmp_name'], $this->_file->rsPath);
  
         	// Must use $_FILES['userfile']['tmp_name'] here
         	move_uploaded_file($_FILES['userfile']['tmp_name'], $this->_file->rsPath);
