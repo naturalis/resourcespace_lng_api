@@ -2,13 +2,13 @@
 
 // Assumes Autoloader is located at root
 define('BASE_PATH', realpath(dirname(__FILE__)));
-define('CLASS_DIRS', serialize(['models', 'controllers'])); // php 5 hack
+define('CLASS_DIRS', ['models', 'controllers']);
 
 class Autoloader
 {
     public static function register () {
         spl_autoload_register(function ($class) {
-        	foreach (unserialize(CLASS_DIRS) as $dir) {
+        	foreach (CLASS_DIRS as $dir) {
         		// Trim namespace from class name
         		$parts = explode('\\', $class);
     			$class = end($parts);
