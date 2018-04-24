@@ -3,7 +3,7 @@
 require_once '../../Autoloader.php';
 
 // Path to RS config file
-$rsConfigPath = '/Users/ruud/Documents/MAMP/htdocs/resourcespace/include/config.php';
+$rsConfigPath = '/var/www/rs/include/config.php';
 
 // Controllers MUST be initiased with path to RS config file!
 $user = new RsApi\UserController($rsConfigPath);
