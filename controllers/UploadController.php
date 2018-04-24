@@ -155,7 +155,7 @@ final class UploadController extends AbstractController {
 		// Original image; add to files container
 		if (!$sizeCode) {
 			$file->name = 'Original';
-			$file->width= $this->_file->width;
+			$file->width = $this->_file->width;
 			$file->height = $this->_file->height;
 			$file->extension = $this->_file->extension;
 			$file->src = $this->_filePathToUrl($filePath);
@@ -165,7 +165,7 @@ final class UploadController extends AbstractController {
 		else if (in_array($sizeCode, $this->_previewCodes)) {
 			$preview = $this->_getPreviewData($sizeCode);
 			$file->name = $preview['name'];
-			$file->width= $preview['width'];
+			$file->width = $preview['width'];
 			$file->height = $preview['height'];
 			$file->extension = $this->_file->extension;
 			$file->src = $this->_filePathToUrl($filePath);
@@ -188,14 +188,27 @@ final class UploadController extends AbstractController {
 	
 	// functional clone of RS method (but minus the incomprehensible juggling of function parameters)
 	private function _createPreviews () {
-		foreach ($this->_getPreviewSizes() as $preview) {
-			$previewPath = $this->_getResourcePath($preview['id'], $this->_file->extension);
-			$cmd = $this->_getImageMagickPath('convert') . ' ' . 
-				escapeshellarg($this->_file->rsPath) . ' quality -90 ' .
-				'-resize ' . $preview['width'] . 'x' . $preview['width'] . "\">\" " .
-				escapeshellarg($previewPath);
-			$this->_runCommand($cmd);
-			$this->_addFileToResponse($previewPath, $preview['id']);
+		// It's an image
+		if ($this->_file->width > 0 && $this->_file->height > 0) {
+			foreach ($this->_getPreviewSizes() as $preview) {
+				$previewPath = $this->_getResourcePath($preview['id'], $this->_file->extension);
+				$cmd = $this->_getImageMagickPath('convert') . ' ' . 
+					escapeshellarg($this->_file->rsPath) . ' quality -90 ' .
+					'-resize ' . $preview['width'] . 'x' . $preview['width'] . "\">\" " .
+					escapeshellarg($previewPath);
+				$this->_runCommand($cmd);
+				$this->_addFileToResponse($previewPath, $preview['id']);
+			}
+		}
+		// It's some other type of file; no previews and thumbnails from RS fall-back options
+		else {
+			$thumbnailUrl = $this->_baseUrl . 'no_preview/extension/' . 
+				$this->_file->extension . '.png';
+			if (file_exists($thumbnailUrl)) {
+				foreach ($this->_thumbnailCodes as $size => $code) {
+					$this->_thumbnails->{$size} = $thumbnailUrl;
+				}
+			}
 		}
 	}
 	
