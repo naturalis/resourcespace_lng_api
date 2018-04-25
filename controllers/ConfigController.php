@@ -15,6 +15,7 @@ class ConfigController {
 	private $_imageMagickPath;
 	private $_scrambleKey;
 	private $_storageDir;
+	private $_noPreviewDir = 'gfx/no_preview/extension/';
 	
 	public function __construct ($config = false) {
 		if ($config) {
@@ -36,6 +37,10 @@ class ConfigController {
 	
 	public function getStorageDir () {
 		return $this->_storageDir;
+	}
+	
+	public function getNoPreviewDir () {
+		return $this->_noPreviewDir;
 	}
 	
 	public function getScrambleKey () {
