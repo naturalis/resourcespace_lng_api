@@ -208,13 +208,12 @@ final class UploadController extends AbstractController {
 		}
 		// It's some other type of file; skip previews and create thumbnails from RS fall-back option
 		else {
-			$thumbnailPath = $this->_baseUrl . '/' . $this->_noPreviewDir . 
-				$this->_file->extension . '.png';
+			$thumbnailPath = $this->_noPreviewDir . $this->_file->extension . '.png';
 			foreach ($this->_thumbnailCodes as $size => $code) {
-				//if (file_exists($thumbnailPath)) {
+				if (file_exists($thumbnailPath)) {
 					$this->_thumbnails->{$size} = $this->_noPreviewBaseUrl . 
-					$this->_file->extension . '.png';
-				//}
+						$this->_file->extension . '.png';
+				}
 			} 
 		}
 	}
