@@ -207,11 +207,11 @@ final class UploadController extends AbstractController {
 		else {
 			$thumbnailUrl = $this->_baseUrl . '/' . $this->_noPreviewDir . 
 				$this->_file->extension . '.png';
-			//if (file_exists($thumbnailUrl)) {
+			if (file_exists($thumbnailUrl)) {
 				foreach ($this->_thumbnailCodes as $size => $code) {
 					$this->_thumbnails->{$size} = $thumbnailUrl;
 				}
-			//}
+			}
 		}
 	}
 	
