@@ -24,6 +24,11 @@ abstract class AbstractController {
 		$this->_initResponse();
 	}
 	
+	// Poor man's option to check if file is an image
+	public function isImage ($path) {
+		return getimagesize($path) !== false;
+	}
+	
 	protected function _checkApiCredentials ($apiKey = false, $isAdmin = false) {
 		if (!$apiKey) {
 			throw new \Exception('Error! No api key provided');

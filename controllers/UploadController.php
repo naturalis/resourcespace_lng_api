@@ -192,7 +192,7 @@ final class UploadController extends AbstractController {
 	// functional clone of RS method (but minus the incomprehensible juggling of function parameters)
 	private function _createPreviews () {
 		// It's an image
-		if ($this->_isImage($this->_file->rsPath)) {
+		if ($this->isImage($this->_file->rsPath)) {
 			foreach ($this->_getPreviewSizes() as $preview) {
 				$previewPath = $this->_getResourcePath($preview['id'], $this->_file->extension);
 				$cmd = $this->_getImageMagickPath('convert') . ' ' . 
@@ -322,10 +322,5 @@ final class UploadController extends AbstractController {
 		return [$sw, $sh];
 	}
 	
-	// Poor man's option to check if file is an image
-	private function _isImage ($path) {
-		return !empty(getimagesize($path));
-	}
-
 	
 }
