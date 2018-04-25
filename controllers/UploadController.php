@@ -35,8 +35,10 @@ final class UploadController extends AbstractController {
 	private $_scrambleKey;
 	// RS filestore location (set from config)
 	private $_storageDir;
-	//RS no preview path, used thumbnails of for non-images
+	// RS no preview path, used thumbnails of for non-images
 	private $_noPreviewDir;
+	// RS base url to thumbnails for non-images
+	private $_noPreviewBaseUrl;
 	// Base url (set from config)
 	private $_baseUrl;
 	// Available preview types (set from RS database)
@@ -62,6 +64,7 @@ final class UploadController extends AbstractController {
 		$this->_storageDir = $this->_config->getStorageDir();
 		$this->_scrambleKey = $this->_config->getScrambleKey();
 		$this->_noPreviewDir = $this->_config->getNoPreviewDir();
+		$this->_noPreviewBaseUrl = $this->_config->getNoPreviewBaseUrl();
 		$this->_baseUrl = $this->_config->getRsBaseUrl();
 		// Create file object with posted data; includes simple bootstrap
 		try {
@@ -205,11 +208,12 @@ final class UploadController extends AbstractController {
 		}
 		// It's some other type of file; skip previews and create thumbnails from RS fall-back option
 		else {
-			$thumbnailUrl = $this->_baseUrl . '/' . $this->_noPreviewDir . 
+			$thumbnailPath = $this->_baseUrl . '/' . $this->_noPreviewDir . 
 				$this->_file->extension . '.png';
-			if (file_exists($thumbnailUrl)) {
+			if (file_exists($thumbnailPath)) {
 				foreach ($this->_thumbnailCodes as $size => $code) {
-					$this->_thumbnails->{$size} = $thumbnailUrl;
+					$this->_thumbnails->{$size} = $this->_noPreviewBaseUrl . 
+						$this->_file->extension . '.png';
 				}
 			}
 		}

@@ -15,7 +15,8 @@ class ConfigController {
 	private $_imageMagickPath;
 	private $_scrambleKey;
 	private $_storageDir;
-	private $_noPreviewDir = 'gfx/no_preview/extension/';
+	private $_noPreviewDir;
+	private $_noPreviewBaseUrl;
 	
 	public function __construct ($config = false) {
 		if ($config) {
@@ -41,6 +42,10 @@ class ConfigController {
 	
 	public function getNoPreviewDir () {
 		return $this->_noPreviewDir;
+	}
+	
+	public function getNoPreviewBaseUrl () {
+		return $this->_noPreviewBaseUrl;
 	}
 	
 	public function getScrambleKey () {
@@ -70,8 +75,12 @@ class ConfigController {
 		$this->_rsApiScrambleKey = $api_scramble_key ?? false;
 		// Scramble key for file paths
 		$this->_scrambleKey = $scramble_key ?? false;
-		// Scramble key for file paths
-		$this->_storageDir = $storagedir ?? dirname(dirname($this->_rsConfigPath)) . "/filestore";
+		// Path to filestore
+		$this->_storageDir = $storagedir ?? dirname(dirname($this->_rsConfigPath)) . '/filestore';
+		// Path to directory with non-image thumbnails
+		$this->_noPreviewDir = $storagedir ?? dirname(dirname($this->_rsConfigPath)) . '/gfx/no_preview/extension/';
+		// Base url to non-image thumbnails
+		$this->_noPreviewBaseUrl = $baseurl ?? $baseurl . '/gfx/no_preview/extension/';
 		// Path to ImageMagick
 		$this->_imageMagickPath = $imagemagick_path ?? false;
 	}
