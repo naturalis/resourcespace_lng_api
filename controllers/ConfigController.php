@@ -78,9 +78,9 @@ class ConfigController {
 		// Path to filestore
 		$this->_storageDir = $storagedir ?? dirname(dirname($this->_rsConfigPath)) . '/filestore';
 		// Path to directory with non-image thumbnails
-		$this->_noPreviewDir = $storagedir ?? dirname(dirname($this->_rsConfigPath)) . '/gfx/no_preview/extension/';
+		$this->_noPreviewDir = dirname(dirname($this->_rsConfigPath)) . '/gfx/no_preview/extension/';
 		// Base url to non-image thumbnails
-		$this->_noPreviewBaseUrl = $baseurl ?? $baseurl . '/gfx/no_preview/extension/';
+		$this->_noPreviewBaseUrl = $baseurl ? $baseurl . '/gfx/no_preview/extension/' : false;
 		// Path to ImageMagick
 		$this->_imageMagickPath = $imagemagick_path ?? false;
 	}
