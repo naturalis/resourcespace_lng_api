@@ -22,7 +22,7 @@ class DatabaseModel {
 	}
 		
 	protected function _mysqli () {
-		if (!($this->_mysqli instanceof MySQLi)) {
+		if (!($this->_mysqli instanceof \MySQLi)) {
 			$this->_mysqli = new \mysqli(
 				$this->_settings->host,
 				$this->_settings->user,
@@ -95,6 +95,7 @@ class DatabaseModel {
 				'[(str)types => (array)[value1, value2, etc]');
 		}
 		// Values should be passed by reference
+		$bindParams = [];
 		foreach (array_values($params)[0] as $key => $value) {
 			$bindParams[$key] = &array_values($params)[0][$key];
 		}
