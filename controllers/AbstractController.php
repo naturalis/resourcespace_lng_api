@@ -9,7 +9,7 @@ abstract class AbstractController {
 	// Database handler
 	protected $_dbh;
 	// Login verification
-	protected $_loginSucccessful = false;
+	protected $_loginSuccessful = false;
 	// RS user id of api user (set after successful login)
 	protected $_apiUserId;
 	// Api response
@@ -39,7 +39,7 @@ abstract class AbstractController {
 		if (count($userData) == 2) {
 			list($userName, $hashedPassword) = $userData;
 			$this->_apiUserId = $this->_dbh->userLogin($userName, $hashedPassword, $isAdmin);
-			$this->_loginSucccessful = !empty($this->_apiUserId) ? true : false;
+			$this->_loginSuccessful = !empty($this->_apiUserId) ? true : false;
 			return true;
 		}
 		return false;

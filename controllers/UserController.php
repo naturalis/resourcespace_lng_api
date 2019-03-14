@@ -59,7 +59,7 @@ final class UserController extends AbstractController {
 			$this->_userName = $name;
 		}
 		$this->checkApiCredentials();
-		if (!$this->_loginSucccessful) {
+		if (!$this->_loginSuccessful) {
 			$this->_setResponseError("Error! Login failed");
 		// User name not provided (neither through url not passed directly)
 		} else if (empty($this->_userName)) {
