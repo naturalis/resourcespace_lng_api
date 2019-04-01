@@ -91,7 +91,6 @@ final class UploadController extends AbstractController {
 	public function createResource () {
 		$this->checkApiCredentials();
 		if (!$this->_loginSuccessful || empty($this->_apiUserId)) {
-			$this->_setResponseError('Error! Login failed');
 			return $this->getResponse();
 		}
 		if (empty($this->_file)) {

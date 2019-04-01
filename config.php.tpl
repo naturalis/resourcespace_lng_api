@@ -1,4 +1,4 @@
 <?php
 
 // Path to RS config file
-$rsConfigPath = '/var/www/rs/include/config.php';
+$rsConfigPath = '/var/www/html/resourcespace/include/config.php';
